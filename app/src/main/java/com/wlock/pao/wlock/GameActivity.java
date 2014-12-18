@@ -18,7 +18,7 @@ public class GameActivity extends ActionBarActivity {
     boolean flag;
     public Timer timer;
     public TimerTask timerTask;
-    final Handler handler = new Handler();
+    final Handler timerhandler = new Handler();
 
     private Button button2;
     private Button button3;
@@ -69,7 +69,7 @@ public class GameActivity extends ActionBarActivity {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                handler.post(new Runnable() {
+                timerhandler.post(new Runnable() {
                     @Override
                     public void run() {
                         button2.setBackgroundColor(Color.BLACK);

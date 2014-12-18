@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,6 +20,8 @@ public class GameActivity extends ActionBarActivity {
     public Timer timer;
     public TimerTask timerTask;
     final Handler timerhandler = new Handler();
+    public int randomNumber;
+    public Random random;
 
     private Button button2;
     private Button button3;
@@ -29,19 +32,22 @@ public class GameActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
+        randomNumber = 0;
         flag = false;
 
         button2 = (Button)findViewById(R.id.button2);
         button3 = (Button)findViewById(R.id.button3);
         button4 = (Button)findViewById(R.id.button4);
         button5 = (Button)findViewById(R.id.button5);
+        button2.setEnabled(false);
+        button3.setEnabled(false);
+        button4.setEnabled(false);
+        button5.setEnabled(false);
         button2.setOnClickListener(myClickListener);
         button3.setOnClickListener(myClickListener);
         button4.setOnClickListener(myClickListener);
         button5.setOnClickListener(myClickListener);
-
-        StartTimer();
+        StartRandomAndTimer();
 
     }
 
@@ -49,22 +55,30 @@ public class GameActivity extends ActionBarActivity {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.button2:
-                    button2.setBackgroundColor(Color.RED);
+                    button2.setBackgroundColor(Color.WHITE);
                     break;
                 case R.id.button3:
-                    button3.setBackgroundColor(Color.RED);
+                    button3.setBackgroundColor(Color.WHITE);
                     break;
                 case R.id.button4:
-                    button4.setBackgroundColor(Color.RED);
+                    button4.setBackgroundColor(Color.WHITE);
                     break;
                 case R.id.button5:
-                    button5.setBackgroundColor(Color.RED);
+                    button5.setBackgroundColor(Color.WHITE);
+                    break;
+                default:
+                    button2.setBackgroundColor(Color.WHITE);
+                    button3.setBackgroundColor(Color.WHITE);
+                    button4.setBackgroundColor(Color.WHITE);
+                    button5.setBackgroundColor(Color.WHITE);
                     break;
             }
+
         }
     };
 
-    void StartTimer(){
+    void StartRandomAndTimer(){
+        random = new Random();
         timer = new Timer();
         timerTask = new TimerTask() {
             @Override
@@ -72,13 +86,32 @@ public class GameActivity extends ActionBarActivity {
                 timerhandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        button2.setBackgroundColor(Color.BLACK);
+                        randomNumber = 1 + random.nextInt(4);
+                        switch(randomNumber){
+                            case 1:
+                                button2.setEnabled(true);
+                                button2.setBackgroundColor(Color.RED);
+                                break;
+                            case 2:
+                                button3.setEnabled(true);
+                                button3.setBackgroundColor(Color.RED);
+                                break;
+                            case 3:
+                                button4.setEnabled(true);
+                                button4.setBackgroundColor(Color.RED);
+                                break;
+                            case 4:
+                                button5.setEnabled(true);
+                                button5.setBackgroundColor(Color.RED);
+                                break;
+                        }
                     }
                 });
             }
         };
-        timer.schedule(timerTask, 10000, 10000);
+        timer.schedule(timerTask, 2000, 2000);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

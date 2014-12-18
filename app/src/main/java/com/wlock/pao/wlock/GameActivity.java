@@ -1,53 +1,84 @@
 package com.wlock.pao.wlock;
 
-import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class GameActivity extends ActionBarActivity {
 
-    public boolean flag;
+    boolean flag;
+    public Timer timer;
+    public TimerTask timerTask;
+    final Handler handler = new Handler();
+
+    private Button button2;
+    private Button button3;
+    private Button button4;
+    private Button button5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        Button button2 = (Button)findViewById(R.id.button2);
-        Button button3 = (Button)findViewById(R.id.button3);
-        Button button4 = (Button)findViewById(R.id.button4);
-        Button button5 = (Button)findViewById(R.id.button5);
+        flag = false;
 
+        button2 = (Button)findViewById(R.id.button2);
+        button3 = (Button)findViewById(R.id.button3);
+        button4 = (Button)findViewById(R.id.button4);
+        button5 = (Button)findViewById(R.id.button5);
         button2.setOnClickListener(myClickListener);
         button3.setOnClickListener(myClickListener);
         button4.setOnClickListener(myClickListener);
         button5.setOnClickListener(myClickListener);
+
+        StartTimer();
+
     }
 
     private View.OnClickListener myClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.button2:
-                    //textView1.setText("textview1");
+                    button2.setBackgroundColor(Color.RED);
                     break;
                 case R.id.button3:
-                    //textView2.setText("textview2");
+                    button3.setBackgroundColor(Color.RED);
                     break;
                 case R.id.button4:
-                    //textView2.setText("textview2");
+                    button4.setBackgroundColor(Color.RED);
                     break;
                 case R.id.button5:
-                    //textView2.setText("textview2");
+                    button5.setBackgroundColor(Color.RED);
                     break;
             }
         }
     };
 
+    void StartTimer(){
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        button2.setBackgroundColor(Color.BLACK);
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask, 10000, 10000);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

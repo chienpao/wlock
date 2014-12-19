@@ -1,6 +1,7 @@
 package com.wlock.pao.wlock;
 
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -22,6 +23,7 @@ public class GameActivity extends ActionBarActivity {
     final Handler timerhandler = new Handler();
     public int randomNumber;
     public Random random;
+    public MediaPlayer mediaPlayer;
 
     private Button button2;
     private Button button3;
@@ -34,6 +36,7 @@ public class GameActivity extends ActionBarActivity {
         setContentView(R.layout.activity_game);
         randomNumber = 0;
         flag = false;
+        mediaPlayer = MediaPlayer.create(this, R.raw.dog);
 
         button2 = (Button)findViewById(R.id.button2);
         button3 = (Button)findViewById(R.id.button3);
@@ -48,7 +51,6 @@ public class GameActivity extends ActionBarActivity {
         button4.setOnClickListener(myClickListener);
         button5.setOnClickListener(myClickListener);
         StartRandomAndTimer();
-
     }
 
     private View.OnClickListener myClickListener = new View.OnClickListener() {
@@ -56,21 +58,23 @@ public class GameActivity extends ActionBarActivity {
             switch(v.getId()){
                 case R.id.button2:
                     button2.setBackgroundColor(Color.WHITE);
+                    mediaPlayer.start();
+                    button2.setEnabled(false);
                     break;
                 case R.id.button3:
                     button3.setBackgroundColor(Color.WHITE);
+                    mediaPlayer.start();
+                    button3.setEnabled(false);
                     break;
                 case R.id.button4:
                     button4.setBackgroundColor(Color.WHITE);
+                    mediaPlayer.start();
+                    button4.setEnabled(false);
                     break;
                 case R.id.button5:
                     button5.setBackgroundColor(Color.WHITE);
-                    break;
-                default:
-                    button2.setBackgroundColor(Color.WHITE);
-                    button3.setBackgroundColor(Color.WHITE);
-                    button4.setBackgroundColor(Color.WHITE);
-                    button5.setBackgroundColor(Color.WHITE);
+                    mediaPlayer.start();
+                    button5.setEnabled(false);
                     break;
             }
 
@@ -109,7 +113,7 @@ public class GameActivity extends ActionBarActivity {
                 });
             }
         };
-        timer.schedule(timerTask, 2000, 2000);
+        timer.schedule(timerTask, 1000, 1000);
     }
 
     @Override
@@ -132,5 +136,12 @@ public class GameActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.release();
+        mediaPlayer = null;
     }
 }

@@ -15,7 +15,7 @@ import java.util.TimerTask;
 
 
 public class GameActivity extends ActionBarActivity {
-
+    boolean test;
     boolean flag;
     public Timer timer;
     public TimerTask timerTask;

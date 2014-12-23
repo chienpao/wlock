@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,15 +22,13 @@ public class GameActivity extends ActionBarActivity {
     public TimerTask timerTask;
     final Handler timerHandler = new Handler();
     public int randomNumber;
-    public Random random;
     public MediaPlayer mediaPlayer;
+    private TextView textView;
 
     // 2 by 2 array button
     private Button[][] button = new Button[2][2];
 
-    private Random rainbowRandom;
-    private int rainbowRandomNumber;
-    private int[][] rainbowArr = new int[2][2];
+    private int[][] rainbowRandomNumber = new int[2][2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +41,7 @@ public class GameActivity extends ActionBarActivity {
         button[0][1] = (Button)findViewById(R.id.button3);
         button[1][0] = (Button)findViewById(R.id.button4);
         button[1][1] = (Button)findViewById(R.id.button5);
+        textView = (TextView)findViewById(R.id.textView);
 
         initButtonColorAndStatus();
 
@@ -50,31 +49,31 @@ public class GameActivity extends ActionBarActivity {
         button[0][1].setOnClickListener(myClickListener);
         button[1][0].setOnClickListener(myClickListener);
         button[1][1].setOnClickListener(myClickListener);
-        StartRandomAndTimer();
+        StartCheckTimer();
     }
 
     private View.OnClickListener myClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.button2:
-                    button[0][0].setBackgroundColor(Color.WHITE);
+                    rainbowRandomNumber[0][0]++;
+                    button[0][0].setBackgroundColor(transferNumber2Color(rainbowRandomNumber[0][0]));
                     mediaPlayer.start();
-                    button[0][0].setEnabled(false);
                     break;
                 case R.id.button3:
-                    button[0][1].setBackgroundColor(Color.WHITE);
+                    rainbowRandomNumber[0][1]++;
+                    button[0][1].setBackgroundColor(transferNumber2Color(rainbowRandomNumber[0][1]));
                     mediaPlayer.start();
-                    button[0][1].setEnabled(false);
                     break;
                 case R.id.button4:
-                    button[1][0].setBackgroundColor(Color.WHITE);
+                    rainbowRandomNumber[1][0]++;
+                    button[1][0].setBackgroundColor(transferNumber2Color(rainbowRandomNumber[1][0]));
                     mediaPlayer.start();
-                    button[1][0].setEnabled(false);
                     break;
                 case R.id.button5:
-                    button[1][1].setBackgroundColor(Color.WHITE);
+                    rainbowRandomNumber[1][1]++;
+                    button[1][1].setBackgroundColor(transferNumber2Color(rainbowRandomNumber[1][1]));
                     mediaPlayer.start();
-                    button[1][1].setEnabled(false);
                     break;
             }
 
@@ -83,30 +82,27 @@ public class GameActivity extends ActionBarActivity {
 
     void initButtonColorAndStatus() {
         // Make Random number for init button color
-        rainbowRandomNumber = 0;
-        rainbowRandom = new Random();
         mediaPlayer = MediaPlayer.create(this, R.raw.dog);
         int Color;
 
-        for (int i = 0; i < rainbowArr.length; i++) {
-            for (int j = 0; j < rainbowArr[i].length; j++){
-                rainbowRandomNumber = 1 + rainbowRandom.nextInt(7);
-                rainbowArr[i][j] = rainbowRandomNumber;
-                Log.i("Pao", Integer.toString(i) + "," + Integer.toString(j) + "= " + Integer.toString(rainbowRandomNumber));
-                Color = transferNumber2Color();
+        for (int i = 0; i < rainbowRandomNumber.length; i++) {
+            for (int j = 0; j < rainbowRandomNumber[i].length; j++){
+                rainbowRandomNumber[i][j] = RandomClass.getRandom(0, 7);
+                Log.i("Pao", Integer.toString(i) + "," + Integer.toString(j) + "= " + Integer.toString(rainbowRandomNumber[i][j]));
+                Color = transferNumber2Color(rainbowRandomNumber[i][j]);
                 button[i][j].setBackgroundColor(Color);
             }
         }
 
-        // the button is disable in init
+        /* the button is disable in init
         button[0][0].setEnabled(false);
         button[0][1].setEnabled(false);
         button[1][0].setEnabled(false);
-        button[1][1].setEnabled(false);
+        button[1][1].setEnabled(false);*/
     }
 
-    int transferNumber2Color(){
-        switch(rainbowRandomNumber){
+    int transferNumber2Color(int value){
+        switch(value){
             case 1:
                 return Color.RED;
             case 2:
@@ -126,8 +122,7 @@ public class GameActivity extends ActionBarActivity {
         }
     }
 
-    void StartRandomAndTimer(){
-        random = new Random();
+    void StartCheckTimer(){
         timer = new Timer();
         timerTask = new TimerTask() {
             @Override
@@ -135,30 +130,19 @@ public class GameActivity extends ActionBarActivity {
                 timerHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        randomNumber = 1 + random.nextInt(4);
-                        switch(randomNumber){
-                            case 1:
-                                button[0][0].setEnabled(true);
-                                button[0][0].setBackgroundColor(Color.RED);
-                                break;
-                            case 2:
-                                button[0][1].setEnabled(true);
-                                button[0][1].setBackgroundColor(Color.RED);
-                                break;
-                            case 3:
-                                button[1][0].setEnabled(true);
-                                button[1][0].setBackgroundColor(Color.RED);
-                                break;
-                            case 4:
-                                button[1][1].setEnabled(true);
-                                button[1][1].setBackgroundColor(Color.RED);
-                                break;
-                        }
+
+                        if(rainbowRandomNumber[0][0] ==
+                                rainbowRandomNumber[0][1] &&
+                                rainbowRandomNumber[1][0] ==
+                                rainbowRandomNumber[1][1] &&
+                                rainbowRandomNumber[1][1] ==
+                                        rainbowRandomNumber[0][0]
+                                )textView.setText("Pass");
                     }
                 });
             }
         };
-        timer.schedule(timerTask, 1000, 1000);
+        timer.schedule(timerTask, 1000, 100);
     }
 
     @Override
